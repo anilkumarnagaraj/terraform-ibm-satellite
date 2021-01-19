@@ -74,7 +74,7 @@ module "satellite-host" {
   ip_count          = var.assign_host_count
   host_vm           = module.ec2.private_dns
   location          = var.location
-  host_zone         = var.host_zone
+  host_zone         = var.region
   ibmcloud_api_key  = var.ibmcloud_api_key
   region            = var.region
   endpoint          = var.endpoint
@@ -91,20 +91,12 @@ module "satellite-host" {
 | location_zone                         | Zone in which satellite location has to be created. Ex:wdc06      | string   | wdc06    | yes      |
 | labels                                | Label to create location                                          | string   | env=dev |  yes     |
 | ibmcloud_api_key                      | IBM Cloud API Key                                                 | string   | n/a     | yes      |
-| endpoint                              | Endpoint of production environment of IBM Cloud                   | string   | cloud.ibm.com     | yes      |
 | aws_region                            | AWS region                                                        | string   | n/a     | yes      |
 | aws_access_key                        | AWS access key                                                    | string   | n/a     | yes      |
 | aws_secret_key                        | AWS secret key                                                    | string   | n/a     | yes      |
 | region                                | ibm cloud region                                                  | string   | us-south     | yes      |
 | resource_group                        | Resource Group Name that has to be targeted                       | string   | default     | yes      |
-| ami                                   | ID of AMI to use for the instance                                 | string   | ami-065ec1e661d619058     | yes      |
-| instance_type                         | The type of instance to start                                     | string   | m5d.2xlarge     | yes      |
 | vm_prefix                             | Name to be used on all resources as prefix                        | string   | sat     | yes      |
-| volume_size                           | EC2 volume size                                                   | number   | 10     | yes      |
 | key_name                              | The key name to use for the instance                              | string   | aws_ssh_key    | yes      |
 | ssh_public_key                        | SSH Public key for the instance                                   | string   | n/a     | yes      |
 | instance_count                        | Number of instances to launch                                     | number   | 3     | yes      |
-| tags                                  | A mapping of tags to assign to the resource                       | map(string)   | {"env": "aws"}    | yes      |
-| assign_host_count                     | Number of instances to attach to the location                     | number   | 3     | yes      |
-| host_zone                             | location zone                                                     | string   | us-east     | yes      |
-

@@ -27,16 +27,6 @@ variable "ibmcloud_api_key" {
   type         = string
 }
 
-variable "endpoint" {
-  default = "cloud.ibm.com"
-}
-
-variable "aws_region" {
-  description  = "AWS region"
-  type         = string
-  default      = "eu-west-1"
-}
-
 variable "aws_access_key" {
   description  = "AWS access key"
   type         = string
@@ -44,6 +34,11 @@ variable "aws_access_key" {
 
 variable "aws_secret_key" {
   description  = "AWS secret key"
+  type         = string
+}
+
+variable "aws_region" {
+  description  = "AWS region"
   type         = string
 }
 
@@ -63,28 +58,10 @@ variable "resource_group" {
 # AWS EC2 Variables
 ##################################################
 
-variable "ami" {
-  description  = "AWS ami ID"
-  type         = string
-   default     = "ami-065ec1e661d619058"
-}
-
-variable "instance_type" {
-  description = "AWS EC2 Instance type"
-  type        = string
-  default     = "m5d.2xlarge"
-}
-
 variable "vm_prefix" {
   description = "Name to be used on all VMs as prefix"
   type        = string
-  default     = "sat"
-}
-
-variable "volume_size" {
-  description = "Volume size of instance"
-  type        = number
-  default     = 10
+  default     = "aws-satellite-ec2"
 }
 
 variable "key_name" {
@@ -102,23 +79,4 @@ variable "instance_count" {
   description = "Number of instances to launch"
   type        = number
   default     = 3
-}
-
-variable "tags" {
-  description = "A mapping of tags to assign to the resource"
-  type        = map(string)
-  default     = {"env": "aws"}
-}
-
-##################################################
-# Assign Host Variables
-##################################################
-
-variable "assign_host_count" {
-  type        = number
-  default     = 3
-}
-
-variable "host_zone" {
-  default = "us-east"
 }

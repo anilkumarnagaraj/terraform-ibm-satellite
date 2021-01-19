@@ -28,12 +28,6 @@ module "security_group" {
       cidr_blocks = "0.0.0.0/0"
     },
     {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
       from_port   = 443
       to_port     = 443
       protocol    = "tcp"
@@ -110,6 +104,32 @@ resource "aws_key_pair" "keypair" {
   public_key  = var.ssh_public_key
 }
 
+resource "null_resource" "health_check_2" {
+depends_on    = [ module.ec2 ]
+ provisioner "local-exec" {
+    command = <<EOT
+      echo "Inside terraform module..."
+      pwd
+      echo "*******"
+      ls -l /tmp
+      echo "*******"
+      echo "@@@@ PATH MODULE @@@@@"
+      echo ${path.module}
+      ls -l ${path.module}
+      echo "@@@@ CURRENT DIR @@@@@"
+      ls -l .
+      echo "Done....."
+      echo "update file permission..."
+      chmod 777 /tmp/addhost.sh
+      echo "update file permission done..."
+      echo "list temp filess.."
+      ls -l /tmp
+      echo "closing....health..."
+      ls -l /tmp/addhost.sh
+    EOT
+  }
+}
+
 
 module "ec2" {
   source                      = "terraform-aws-modules/ec2-instance/aws"
@@ -117,22 +137,20 @@ module "ec2" {
   depends_on                  = [ module.satellite-location ]
   instance_count              = var.instance_count
   name                        = var.vm_prefix
-  ami                         = var.ami
-  instance_type               = var.instance_type
+  ami                         = "ami-065ec1e661d619058"
+  instance_type               = "m5d.2xlarge"
   key_name                    = aws_key_pair.keypair.key_name
   subnet_id                   = tolist(data.aws_subnet_ids.all.ids)[0]
   vpc_security_group_ids      = [module.security_group.this_security_group_id]
   associate_public_ip_address = true
   placement_group             = aws_placement_group.web.id
-  user_data                   = file(replace("${path.module}/addhost.sh*${module.satellite-location.module_id}", "/[*].*/", ""))
+  user_data                   = file(replace("/tmp/addhost.sh*${module.satellite-location.module_id}", "/[*].*/", ""))
  
   root_block_device = [
     {
       volume_type = "gp2"
-      volume_size = var.volume_size
+      volume_size = 10
     },
   ]
-
-  tags = var.tags
 
 }
