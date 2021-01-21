@@ -27,27 +27,16 @@ fi
 
 path=$(echo $path_out| cut -d' ' -f 21)
 echo path= $path
-
-echo "current directory......!!!"
-pwd
-echo $path
-ls -l $path
-echo "****** current directory ******"
-
 if [[ $PROVIDER == "ibm" ]];
 then
-  awk '1;/API_URL=/{ print "subscription-manager refresh"; print "subscription-manager repos --enable=*";}' $path  > /tmp/addhost.sh
+  awk '1;/API_URL=/{ print "subscription-manager refresh"; print "subscription-manager repos --enable=*";}' $path  > addhost.sh
 elif [[ $PROVIDER == "aws" ]];
 then
-  awk '1;/API_URL=/{ print "yum update -y"; print "yum-config-manager --enable \x27*\x27"; print "yum repolist all"; print "yum install container-selinux -y";}' $path  > /tmp/addhost.sh
+  awk '1;/API_URL=/{ print "yum update -y"; print "yum-config-manager --enable \x27*\x27"; print "yum repolist all"; print "yum install container-selinux -y";}' $path  > addhost.sh
 fi
 
-chmod 777 /tmp/addhost.sh
-echo "current directory......!!!"
-pwd
-echo $path
-ls -l /tmp
-echo "---------"
-ls -l .
-echo "****** current directory ******"
-ls -l /tmp/addhost.sh
+echo "*********  Start  *********"
+chmod 777 addhost.sh
+echo pwd= $(pwd)
+ls -l ./addhost.sh
+echo "*********  Completed  *********"

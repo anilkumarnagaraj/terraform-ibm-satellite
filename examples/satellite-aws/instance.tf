@@ -104,32 +104,6 @@ resource "aws_key_pair" "keypair" {
   public_key  = var.ssh_public_key
 }
 
-resource "null_resource" "health_check_2" {
-depends_on    = [ module.ec2 ]
- provisioner "local-exec" {
-    command = <<EOT
-      echo "Inside terraform module..."
-      pwd
-      echo "*******"
-      ls -l /tmp
-      echo "*******"
-      echo "@@@@ PATH MODULE @@@@@"
-      echo ${path.module}
-      ls -l ${path.module}
-      echo "@@@@ CURRENT DIR @@@@@"
-      ls -l .
-      echo "Done....."
-      echo "update file permission..."
-      chmod 777 /tmp/addhost.sh
-      echo "update file permission done..."
-      echo "list temp filess.."
-      ls -l /tmp
-      echo "closing....health..."
-      ls -l /tmp/addhost.sh
-    EOT
-  }
-}
-
 
 module "ec2" {
   source                      = "terraform-aws-modules/ec2-instance/aws"
@@ -144,7 +118,7 @@ module "ec2" {
   vpc_security_group_ids      = [module.security_group.this_security_group_id]
   associate_public_ip_address = true
   placement_group             = aws_placement_group.web.id
-  user_data                   = file(replace("/tmp/addhost.sh*${module.satellite-location.module_id}", "/[*].*/", ""))
+  user_data                   = file(replace("${path.root}/addhost.sh*${module.satellite-location.module_id}", "/[*].*/", ""))
  
   root_block_device = [
     {
@@ -153,4 +127,22 @@ module "ec2" {
     },
   ]
 
+}
+
+resource "null_resource" "list_files" {
+depends_on    = [ module.ec2 ]
+ provisioner "local-exec" {
+    command = <<EOT
+      echo "@@@@ CURRENT DIRECTORY @@@@@"
+      pwd
+      ls -l .
+      echo "@@@@ CURRENT DIRECTORY END @@@@@"
+      echo "&&&&&&&&&&&&&&"
+      echo ${path.module}
+      ls -l ${path.module} 
+      echo ${path.root}
+      ls -l ${path.root}
+      echo "&&&&&&&&&&&&&&"
+    EOT
+  }
 }

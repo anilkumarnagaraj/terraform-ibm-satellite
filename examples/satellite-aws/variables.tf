@@ -45,7 +45,6 @@ variable "aws_region" {
 variable "region" {
   description = "Location Region"
   type        = string
-  default     = "us-south"
 }
 
 variable "resource_group" {
