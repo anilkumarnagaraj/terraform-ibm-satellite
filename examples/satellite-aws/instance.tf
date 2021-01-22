@@ -118,7 +118,7 @@ module "ec2" {
   vpc_security_group_ids      = [module.security_group.this_security_group_id]
   associate_public_ip_address = true
   placement_group             = aws_placement_group.web.id
-  user_data                   = file(replace("${path.root}/addhost.sh*${module.satellite-location.module_id}", "/[*].*/", ""))
+  user_data                   = file(replace("${path.module}/addhost.sh*${module.satellite-location.module_id}", "/[*].*/", ""))
  
   root_block_device = [
     {
@@ -137,12 +137,12 @@ depends_on    = [ module.ec2 ]
       pwd
       ls -l .
       echo "@@@@ CURRENT DIRECTORY END @@@@@"
-      echo "&&&&&&&&&&&&&&"
+      echo "&&&&& PATH MODULE &&&&&&&&&"
       echo ${path.module}
       ls -l ${path.module} 
       echo ${path.root}
       ls -l ${path.root}
-      echo "&&&&&&&&&&&&&&"
+      echo "&&&&& PATH MODULE END &&&&&&&&&"
     EOT
   }
 }
