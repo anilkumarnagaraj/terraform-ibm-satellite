@@ -1,4 +1,3 @@
-
 #################################################################################################
 # IBMCLOUD -  Authentication , Target Variables.
 #################################################################################################
@@ -9,13 +8,9 @@ variable "ibmcloud_api_key" {
 }
 
 variable "ibm_region" {
-  description = "Region of the IBM Cloud account. Currently supported regions for satellite are us-east and eu-gb region."
-  default     = "eu-gb"
-
-  validation {
-    condition     = var.ibm_region == "us-east" || var.ibm_region == "eu-gb"
-    error_message = "Sorry, satellite only accepts us-east or eu-gb region."
-  }
+  description  = "Region of the IBM Cloud account"
+  type         = string
+  default      = "us-east"
 }
 
 variable "resource_group" {
@@ -24,38 +19,37 @@ variable "resource_group" {
   default     = "Default"
 }
 
+
 variable "endpoint" {
     description  = "Endpoint of production/stage environment of IBM Cloud "
     type         = string
+    default      = "cloud.ibm.com"
 }
 
 #################################################################################################
-# IBMCLOUD -  satellite variables
+# IBMCLOUD -  satellite Variables.
 #################################################################################################
 
 variable "location_name" {
-  description = "Satellite Location Name"
-  type         = string
+   type = string
+}
+
+variable "cluster_name" {
+  type  = string
 }
 
 variable "host_vm" {
+  type  = string
 }
 
-variable "host_count" {
-  description    = "The total number of ibm/aws host to create for control plane"
-  type           = number
-  default        = 3
-
-  validation {
-    condition     = (var.host_count % 3) == 0 &&  var.host_count > 0
-    error_message = "Sorry, host_count value should always be multiple of 3."
-  }
+variable "host_zone" {
+    type         = string
+    default      = "zone-1"
 }
 
 variable "host_provider" {
-    description  = "The cloud provider of host/vms"
-    type         = string
-    default      = "aws"
+  type         = string
+  default      = "aws"
 }
 
 variable "module_depends_on" {
