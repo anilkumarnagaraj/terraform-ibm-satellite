@@ -10,7 +10,7 @@ module "security_group" {
   source      = "terraform-aws-modules/security-group/aws"
   version     = "~> 3.0"
 
-  name        = "satellite-security"
+  name        = "${var.vm_prefix}-satellite-security"
   description = "Security group for satellite usage with EC2 instance"
   vpc_id      = data.aws_vpc.default.id
 
@@ -24,12 +24,6 @@ module "security_group" {
     {
       from_port   = 30000
       to_port     = 32767
-      protocol    = "tcp"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      from_port   = 22
-      to_port     = 22
       protocol    = "tcp"
       cidr_blocks = "0.0.0.0/0"
     },
@@ -101,12 +95,12 @@ module "security_group" {
 }
 
 resource "aws_placement_group" "web" {
-  name     = "hunky-dory-pg"
+  name     = "${var.vm_prefix}-hunky-dory-pg"
   strategy = "cluster"
 }
 
 resource "aws_key_pair" "keypair" {
-  key_name    = var.key_name
+  key_name    = "${var.vm_prefix}-ssh"
   public_key  = var.ssh_public_key
 }
 
@@ -115,9 +109,9 @@ module "ec2" {
   source                      = "terraform-aws-modules/ec2-instance/aws"
   
   depends_on                  = [ module.satellite-location ]
-  instance_count              = var.instance_count
+  instance_count              = 3
   name                        = var.vm_prefix
-  ami                         = var.ami
+  ami                         = "ami-0a0d2dc2f521ddce6"
   instance_type               = var.instance_type
   key_name                    = aws_key_pair.keypair.key_name
   subnet_id                   = tolist(data.aws_subnet_ids.all.ids)[0]
@@ -126,13 +120,8 @@ module "ec2" {
   placement_group             = aws_placement_group.web.id
   user_data                   = file(replace("${path.module}/addhost.sh*${module.satellite-location.module_id}", "/[*].*/", ""))
  
-  root_block_device = [
-    {
-      volume_type = "gp2"
-      volume_size = var.volume_size
-    },
-  ]
-
-  tags = var.tags
+  tags = {
+    "Name"  = "aws"
+  }
 
 }

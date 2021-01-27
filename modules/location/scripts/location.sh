@@ -1,9 +1,10 @@
 
 #!/bin/bash
 
-echo *************create location*****************
+echo "************* ibmcloud cli login *****************"
 ibmcloud login --apikey=$API_KEY -a $ENDPOINT -r $REGION -g $RESOURCE_GROUP
-ibmcloud iam oauth-tokens
+
+echo "************* create satellite location *****************"
 ibmcloud sat location create --managed-from $ZONE --name $LOCATION
 status='provisioning'
 echo $status
@@ -19,12 +20,6 @@ done
 
 path_out=`ibmcloud sat host attach --location $LOCATION -l $LABEL`
 echo $path_out
-if [[ $path_out == "" ]]; then
-  echo "************* Failed to generate script *************"
-  exit 1
-fi
-
-
 path=$(echo $path_out| cut -d' ' -f 21)
 echo path= $path
 if [[ $PROVIDER == "ibm" ]];

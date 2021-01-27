@@ -1,39 +1,33 @@
-resource "null_resource" "assign_host" {
+resource "null_resource" "create_cluster" {
   depends_on = [var.module_depends_on]
-  count      = var.ip_count
 
   triggers = {
-      hostname       = element(var.host_vm, count.index)
-      LOCATION       = var.location_name
+      cluster_name   = var.cluster_name
       API_KEY        = var.ibmcloud_api_key
       REGION         = var.ibm_region
       RESOURCE_GROUP = var.resource_group
       ENDPOINT       = var.endpoint
-      PROVIDER       = var.host_provider
   }
+
 
   provisioner "local-exec" {
     when = create
-    command = ". ${path.module}/../../modules/host/scripts/host.sh"
+    command = ". ${path.module}/../../modules/cluster/scripts/cluster.sh"
     environment = {
-      hostname       = element(var.host_vm, count.index)
-      index          = count.index
       LOCATION       = var.location_name
-      host_zone      = var.host_zone
+      cluster_name   = var.cluster_name
       API_KEY        = var.ibmcloud_api_key
       REGION         = var.ibm_region
       RESOURCE_GROUP = var.resource_group
       ENDPOINT       = var.endpoint
-      PROVIDER       = var.host_provider
     }
   }
 
   provisioner "local-exec" {
     when = destroy
-    command = ". ${path.module}/../../modules/location/scripts/destroy.sh"
+    command = ". ${path.module}/../../modules/cluster/scripts/destroy.sh"
     environment = {
-      hostname       = self.triggers.hostname
-      LOCATION       = self.triggers.LOCATION
+      cluster_name   = self.triggers.cluster_name
       API_KEY        = self.triggers.API_KEY
       REGION         = self.triggers.REGION
       RESOURCE_GROUP = self.triggers.RESOURCE_GROUP
@@ -41,8 +35,5 @@ resource "null_resource" "assign_host" {
     }
   }
 
-}
 
-output "assign_host" {
-  value = null_resource.assign_host
 }

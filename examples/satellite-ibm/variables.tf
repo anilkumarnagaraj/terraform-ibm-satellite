@@ -1,15 +1,15 @@
 ##################################################
 # IBMCLOUD Satellite Location and Host Variables
 ##################################################
-variable "location_zone" {
-  description = "zone of the satellite location. Currently available in washing DC and London Zones."
-  default     = "wdc06"
-}
 variable "location_name" {
   description = "Location Name"
   default     = "satellite-ibm"
 }
-variable "labels" {
+variable "location_zone" {
+  description = "zone of the satellite location. Currently available in washing DC and London Zones."
+  default     = "wdc06"
+}
+variable "location_label" {
   description = "Label to create location"
   default     = "prod=true"
 }
@@ -22,7 +22,10 @@ variable "labels" {
 variable "ibmcloud_api_key" {
   description = "IBM Cloud API Key"
 }
-variable "region" {
+variable "endpoint" {
+  default = "cloud.ibm.com"
+}
+variable "ibm_region" {
   description = "Region of the IBM Cloud account"
   default     = "us-east"
 }
@@ -43,4 +46,12 @@ variable "is_prefix" {
 variable "public_key" {
   description="SSH Public Key. Get your ssh key by running `ssh-key-gen` command"
   type = string
+}
+
+##################################################
+# Satellite cluster
+##################################################
+variable "cluster_name" {
+  description = "Satellite cluster name"
+  default     = "satellite-cluster-01"
 }
