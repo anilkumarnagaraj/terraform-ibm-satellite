@@ -40,7 +40,7 @@ n=0
 until [ "$n" -ge 5 ]
 do
    ibmcloud sat host assign --cluster $LOCATION --location $LOCATION --host $HOST_ID --zone $zone && break
-   echo "************* Failed with $n, waiting to retry *****************""
+   echo "************* Failed with $n, waiting to retry *****************"
    n=$((n+1))
    sleep 10
 done

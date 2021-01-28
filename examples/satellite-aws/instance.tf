@@ -109,7 +109,7 @@ module "ec2" {
   source                      = "terraform-aws-modules/ec2-instance/aws"
   
   depends_on                  = [ module.satellite-location ]
-  instance_count              = 3
+  instance_count              = 1
   name                        = var.vm_prefix
   ami                         = "ami-0a0d2dc2f521ddce6"
   instance_type               = var.instance_type

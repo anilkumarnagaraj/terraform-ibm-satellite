@@ -2,7 +2,7 @@ module "satellite-host" {
   source            = "../../modules/host"
   
   module_depends_on = module.ec2
-  ip_count          = 3
+  ip_count          = 1
   host_vm           = module.ec2.private_dns
   location_name     = var.location_name
   host_zone         = var.ibm_region
