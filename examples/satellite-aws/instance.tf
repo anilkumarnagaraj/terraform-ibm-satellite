@@ -121,7 +121,7 @@ module "ec2" {
   source                      = "terraform-aws-modules/ec2-instance/aws"
   
   depends_on                  = [ module.satellite-location ]
-  instance_count              = var.host_count + 1
+  instance_count              = var.host_count
   name                        = "${var.vm_prefix}-host"
   use_num_suffix 		          = true
   ami                         = data.aws_ami.redhat_linux.id
