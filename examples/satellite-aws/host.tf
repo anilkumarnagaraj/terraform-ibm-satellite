@@ -11,3 +11,9 @@ module "satellite-host" {
   resource_group    = var.resource_group
   host_provider     = "aws"
 }
+
+
+data "aws_region" "current" {
+  depends_on = [ module.satellite-host ]
+  name = "us-east-1"
+}

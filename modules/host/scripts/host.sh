@@ -93,9 +93,3 @@ do
     echo "************* hosts not ready *****************"
     sleep 10
 done
-
-
-sleep 60
-echo "Assiging host $hostname  to control plane completed.."
-echo "Satellite control plane is setting up. Please wait for 40 mins to complete..!!!!"
-exit 0
