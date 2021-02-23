@@ -63,6 +63,16 @@ variable "location_label" {
   default     = "prod=true"
 }
 
+variable "location_zones" {
+  description = "Allocate your hosts across these three zones"
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+  validation {
+    condition     = length(var.location_zones) == 3
+    error_message = "Sorry, location_zones should have 3 zones."
+  }
+}
 
 ##################################################
 # AWS EC2 Variables

@@ -26,11 +26,23 @@ out=$(ibmcloud sat location get --location $LOCATION 2>&1 | grep 'ID:')
 if [[ $out != "" && $out != *"Incident"* ]]; then
   echo "*************  Using location ID for operations *************"
 else
-  ibmcloud sat location create --managed-from $ZONE --name $LOCATION
+  i=0
+  export IFS=","
+  for z in $ZONES; do 
+    if [[  $(( $i % 3 )) == 0 && $i == 0 ]]; then
+      zone1=$(echo $z | tr -d '"')
+    elif [[ $(( $i % 3 )) == 1  && $i == 1 ]]; then
+      zone2=$(echo $z | tr -d '"')
+    elif [[ $(( $i % 3 )) == 2  && $i == 2 ]]; then
+      zone3=$(echo $z | tr -d '"')
+    fi
+    i=$((i+1))
+  done  
+  ibmcloud sat location create --managed-from $ZONE --name $LOCATION --ha-zone $zone1 --ha-zone $zone2 --ha-zone $zone3
   if [[ $? != 0 ]]; then
     exit 1
   fi
-  sleep 200
+  sleep 60
   #Get satellite location ID
   loc_id=$(ibmcloud sat location ls 2>&1 | grep -m 1 $LOCATION | awk '{print $2}')
   if [[ $loc_id != "" ]]; then
@@ -44,14 +56,14 @@ n=0
 path_out=""
 until [ "$n" -ge 5 ]
 do
-   path_out=`ibmcloud sat host attach --location $LOCATION -l $LABEL` && break
+   path_out=`ibmcloud sat host attach --location $LOCATION -hl $LABEL` && break
    echo "************* Failed with $n, waiting to retry *****************"
    n=$((n+1))
    sleep 10
 done
 
-echo $path_out
-path=$(echo $path_out| cut -d' ' -f 21)
+echo path_out= $path_out
+path=$(echo $path_out| cut -d ':' -f 2)
 echo path= $path
 if [[ $path == "" ]]; then
   echo "************* Failed to generate registration script *****************"

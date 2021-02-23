@@ -1,9 +1,24 @@
 data "aws_vpc" "default" {
-  default = true
+  #default = true
+  id = "vpc-0b0174aeffbf419d8"
 }
 
-data "aws_subnet_ids" "all" {
+data "aws_subnet_ids" "example" {
   vpc_id = data.aws_vpc.default.id
+  
+  filter {
+    name   = "availability-zone"
+    values = var.location_zones
+  }
+}
+
+data "aws_subnet" "private" {
+  count = length(data.aws_subnet_ids.example.ids)
+  id = element(data.aws_subnet_ids.example.ids[*], count.index)
+}
+
+locals {
+  subnet_ids = values(zipmap(data.aws_subnet.private.*.availability_zone, data.aws_subnet.private.*.id))
 }
 
 data "aws_ami" "redhat_linux" {
@@ -134,10 +149,9 @@ module "ec2" {
   ami                         = data.aws_ami.redhat_linux.id
   instance_type               = var.instance_type
   key_name                    = aws_key_pair.keypair.key_name
-  subnet_id                   = tolist(data.aws_subnet_ids.all.ids)[0]
+  subnet_ids                  = local.subnet_ids
   vpc_security_group_ids      = [module.security_group.this_security_group_id]
   associate_public_ip_address = true
-  placement_group             = aws_placement_group.web.id
   user_data                   = file(replace("/tmp/.schematics/addhost.sh*${aws_key_pair.keypair.id}", "/[*].*/", ""))
 
 }

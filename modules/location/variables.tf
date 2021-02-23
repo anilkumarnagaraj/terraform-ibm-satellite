@@ -14,6 +14,12 @@ variable "location_label" {
   default     = "prod=true"
 }
 
+variable "location_zones" {
+  description = "A list of VPC Subnet IDs to launch in"
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
+}
+
 #################################################################################################
 # IBMCLOUD -  Authentication , Target Variables.
 #################################################################################################

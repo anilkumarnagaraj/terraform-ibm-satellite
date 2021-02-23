@@ -4,6 +4,7 @@ module "satellite-location" {
 
   location_name     = var.location_name
   location_label    = var.location_label
+  location_zones    = var.location_zones
   ibmcloud_api_key  = var.ibmcloud_api_key
   ibm_region        = var.ibm_region
   endpoint          = "cloud.ibm.com"

@@ -6,7 +6,7 @@ resource "null_resource" "satellite_location" {
       API_KEY        = var.ibmcloud_api_key
       REGION         = var.ibm_region
       RESOURCE_GROUP = var.resource_group
-      ENDPOINT       = "cloud.ibm.com"
+      ENDPOINT       = var.endpoint
       PROVIDER       = var.host_provider
   }
 
@@ -17,11 +17,12 @@ resource "null_resource" "satellite_location" {
     environment = {
       LOCATION       = var.location_name
       LABEL          = var.location_label
+      ZONES          = join("," , [for z in var.location_zones : format("%q", z)])
       API_KEY        = var.ibmcloud_api_key
       REGION         = var.ibm_region
       RESOURCE_GROUP = var.resource_group
       PROVIDER       = var.host_provider
-      ENDPOINT       = "cloud.ibm.com"
+      ENDPOINT       = var.endpoint
     }
   }
 

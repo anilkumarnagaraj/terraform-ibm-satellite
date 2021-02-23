@@ -17,6 +17,7 @@ sleep 10
 
 #Get location ID
 loc_id=$(ibmcloud sat location ls 2>&1 | grep -m 1 $LOCATION | awk '{print $2}')
+echo loc_id= $loc_id
 if [[ $loc_id != "" ]]; then
     LOCATION=$loc_id
 else 
@@ -47,20 +48,16 @@ done
 
 #Get host zone
 host_zones=$(ibmcloud sat location get --location $LOCATION | grep 'Host Zones:' | awk '{print substr($0, index($0, $3))}')
-echo host_zones= $host_zones
 if [[ $host_zones != "" ]]; then
     export IFS=","
     i=0
     for z in $host_zones; do
         if [[  $(( $index % 3 )) == 0 && $i == 0 ]]; then
             zone=$(echo $z | tr -d ' ')
-            break
         elif [[ $(( $index % 3 )) == 1  && $i == 1 ]]; then
             zone=$(echo $z | tr -d ' ')
-            break
         elif [[ $(( $index % 3 )) == 2  && $i == 2 ]]; then
             zone=$(echo $z | tr -d ' ')
-            break
         fi
         i=$((i+1))
     done
