@@ -1,16 +1,21 @@
+#####################################################
+# IBM Cloud Satellite -  Azure Example
+# Copyright 2021 IBM
+#####################################################
+
 /*
 This template uses following
-Modules: 
+Modules:
   Azure/network-security-group/azurerm - Security group and Security group rules
   Azure/vnet/azurerm                   - vpc, subnets, Attach security group to subnets
 Resources: (Using these resources because no standard azure module was found that meets our requirement)
-  azurerm_resource_group                - Resource Group 
+  azurerm_resource_group                - Resource Group
   azurerm_network_interface             - Network interfaces for the Azure Instance
   azurerm_linux_virtual_machine         - Linux Virtual Machines, Attaches host to the Satellite location
 */
 
 
-// Azure Resource Group 
+// Azure Resource Group
 resource "azurerm_resource_group" "resource_group" {
   count    = var.is_az_resource_group_exist == false ? 1 : 0
   name     = var.az_resource_group
@@ -138,4 +143,22 @@ resource "azurerm_linux_virtual_machine" "az_host" {
     sku       = "7-LVM"
     version   = "latest"
   }
+}
+resource "azurerm_managed_disk" "data_disk" {
+  count                = var.satellite_host_count + var.addl_host_count
+  name                 = "${var.az_resource_prefix}-disk-${count.index}"
+  location             = data.azurerm_resource_group.resource_group.location
+  resource_group_name  = data.azurerm_resource_group.resource_group.name
+  storage_account_type = "Premium_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = 128
+  zones                = [element(local.zones, count.index)]
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "disk_attach" {
+  count              = var.satellite_host_count + var.addl_host_count
+  managed_disk_id    = azurerm_managed_disk.data_disk[count.index].id
+  virtual_machine_id = azurerm_linux_virtual_machine.az_host[count.index].id
+  lun                = "10"
+  caching            = "ReadWrite"
 }

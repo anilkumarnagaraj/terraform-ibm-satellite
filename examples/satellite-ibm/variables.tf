@@ -1,3 +1,16 @@
+#################################################################################################
+# IBMCLOUD Authentication and Target Variables.
+# The region variable is common across zones used to setup VSI Infrastructure and Satellite host.
+#################################################################################################
+variable "ibm_region" {
+  description = "Region of the IBM Cloud account. Currently supported regions for satellite are us-east and eu-gb region."
+  default     = "us-east"
+}
+
+variable "resource_group" {
+  description = "Name of the resource group on which location has to be created"
+}
+
 ##################################################
 # IBMCLOUD Satellite Location and Host Variables
 ##################################################
@@ -7,9 +20,9 @@ variable "location" {
 }
 
 variable "managed_from" {
-  description  = "The IBM Cloud region to manage your Satellite location from. Choose a region close to your on-prem data center for better performance."
-  type         = string
-  default      = "wdc04"
+  description = "The IBM Cloud region to manage your Satellite location from. Choose a region close to your on-prem data center for better performance."
+  type        = string
+  default     = "wdc"
 }
 
 variable "location_zones" {
@@ -20,13 +33,13 @@ variable "location_zones" {
 
 variable "location_bucket" {
   description = "COS bucket name"
-  default     = ""
+  default     = null
 }
 
 variable "is_location_exist" {
   description = "Determines if the location has to be created or not"
-  type         = bool
-  default      = false
+  type        = bool
+  default     = false
 }
 
 variable "host_labels" {
@@ -35,47 +48,24 @@ variable "host_labels" {
   default     = ["env:prod"]
 
   validation {
-      condition     = can([for s in var.host_labels : regex("^[a-zA-Z0-9:]+$", s)])
-      error_message = "Label must be of the form `key:value`."
+    condition     = can([for s in var.host_labels : regex("^[a-zA-Z0-9:]+$", s)])
+    error_message = "Label must be of the form `key:value`."
   }
-}
-
-#################################################################################################
-# IBMCLOUD Authentication and Target Variables.
-# The region variable is common across zones used to setup VSI Infrastructure and Satellite host.
-#################################################################################################
-
-variable "ibmcloud_api_key" {
-  description = "IBM Cloud API Key"
-}
-
-variable "ibm_region" {
-  description = "Region of the IBM Cloud account. Currently supported regions for satellite are us-east and eu-gb region."
-  default     = "us-east"
-}
-
-variable "resource_group" {
-  description = "Name of the resource group on which location has to be created"
-}
-
-variable "environment" {
-  description = "Select prod or stage environemnet to run satellite templates"
-  default     = "prod"
 }
 
 ##################################################
 # IBMCLOUD VPC VSI Variables
 ##################################################
 variable "host_count" {
-  description    = "The total number of ibm host to create for control plane"
-  type           = number
-  default        = 3
+  description = "The total number of ibm host to create for control plane"
+  type        = number
+  default     = 3
 }
 
 variable "addl_host_count" {
-  description    = "The total number of additional aws host"
-  type           = number
-  default        = 0
+  description = "The total number of additional aws host"
+  type        = number
+  default     = 0
 }
 
 variable "is_prefix" {
@@ -85,7 +75,7 @@ variable "is_prefix" {
 }
 
 variable "public_key" {
-  description  = "SSH Public Key. Get your ssh key by running `ssh-key-gen` command"
-  type         = string
-  default      = ""
+  description = "SSH Public Key. Get your ssh key by running `ssh-key-gen` command"
+  type        = string
+  default     = null
 }

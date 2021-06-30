@@ -2,7 +2,7 @@
 
 Use this terrafrom automation to set up satellite location on IBM cloud with Azure host.
 
-This example cover end-to-end functionality of IBM cloud satellite by creating satellite location on specified zone. 
+This example cover end-to-end functionality of IBM cloud satellite by creating satellite location on specified zone.
 It will provision Azure host and assign it to setup location control plane.
 
 
@@ -14,13 +14,13 @@ It will provision Azure host and assign it to setup location control plane.
 
 ## Compatibility
 
-This module is meant for use with Terraform 0.13 or later. 
+This module is meant for use with Terraform 0.13 or later.
 
 ## Requirements
 
 ### Terraform plugins
 
-- [Terraform](https://www.terraform.io/downloads.html) 0.13 or later. 
+- [Terraform](https://www.terraform.io/downloads.html) 0.13 or later.
 - [terraform-provider-ibm](https://github.com/IBM-Cloud/terraform-provider-ibm)
 - [terraform-provider-azurerm](https://github.com/terraform-providers/terraform-provider-azurerm)
 - To authenticate azure provider please refer [docs](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret)
@@ -65,17 +65,17 @@ terraform destroy
 ## Example Usage
 ``` hcl
 module "satellite-location" {
-  source = "../../modules/location"
+  //Uncomment following line to point the source to registry level module
+  //source = "terraform-ibm-modules/satellite/ibm//modules/location"
 
+  source            = "../../modules/location"
   is_location_exist = var.is_location_exist
   location          = var.location
   managed_from      = var.managed_from
   location_zones    = var.location_zones
   host_labels       = var.host_labels
-  ibm_region        = var.ibm_region
   resource_group    = var.ibm_resource_group
   host_provider     = "azure"
-  ibmcloud_api_key  = ""
 }
 
 resource "azurerm_linux_virtual_machine" "az_host" {
@@ -108,8 +108,10 @@ resource "azurerm_linux_virtual_machine" "az_host" {
 }
 
 module "satellite-host" {
-  source = "../../modules/host"
+  //Uncomment following line to point the source to registry level module
+  //source = "terraform-ibm-modules/satellite/ibm//modules/host"
 
+  source         = "../../modules/host"
   host_count     = var.satellite_host_count
   location       = module.satellite-location.location_id
   host_vms       = azurerm_linux_virtual_machine.az_host.*.name
@@ -132,7 +134,6 @@ module "satellite-host" {
 | Name                                  | Description                                                       | Type     | Default | Required |
 |---------------------------------------|-------------------------------------------------------------------|----------|---------|----------|
 | ibmcloud_api_key                      | IBM Cloud API Key                                                 | string   | n/a     | yes      |
-| ibm_region                            | Region of the IBM Cloud account. Currently supported regions for satellite are `us-east` and `eu-gb` region. | string   | us-east | yes      |
 | ibm_resource_group                    | IBM Resource group name that has to be targeted                   | string   | n/a     | yes       |
 | subscription_id                       | Subscription id of Azure Account                                  | string   | n/a     | yes      |
 | client_id                             | Client id of Azure Account                                        | string   | n/a     | yes      |
@@ -144,7 +145,7 @@ module "satellite-host" {
 | location                              | Name of the Location that has to be created                       | string   | satellite-azure | yes   |
 | is_location_exist                     | Determines if the location has to be created or not               | bool     | false   | yes      |
 | managed_from                          | The IBM Cloud region to manage your Satellite location from.      | string   | wdc   | yes      |
-| location_zones                        | Allocate your hosts across three zones for higher availablity     | list     | ["us-east-1", "us-east-2", "us-east-3"]    | yes      | 
+| location_zones                        | Allocate your hosts across three zones for higher availablity     | list     | ["us-east-1", "us-east-2", "us-east-3"]    | yes      |
 | host_labels                                | Add labels to attach host script                                  | list     | [env:prod]  | no   |
 | location_bucket                       | COS bucket name                                                   | string   | n/a     | no       |
 | az_resource_prefix                       | Name to be used on all azure resources as prefix                        | string   | satellite-azure     | yes |

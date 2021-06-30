@@ -3,6 +3,12 @@
 # # Azure and IBM Authentication Variables
 # ##################################################
 
+variable "TF_VERSION" {
+  description = "terraform version"
+  type        = string
+  default     = "0.13"
+}
+
 variable "subscription_id" {
   description = "Subscription id of Azure Account"
   type        = string
@@ -38,14 +44,6 @@ variable "az_region" {
 variable "ibmcloud_api_key" {
   description = "IBM Cloud API Key"
   type        = string
-}
-variable "ibm_region" {
-  description = "Region of the IBM Cloud account. Currently supported regions for satellite are `us-east` and `eu-gb` region."
-  default     = "us-east"
-  validation {
-    condition     = var.ibm_region == "us-east" || var.ibm_region == "eu-gb"
-    error_message = "Sorry, satellite only accepts us-east or eu-gb region."
-  }
 }
 variable "ibm_resource_group" {
   description = "Resource group name of the IBM Cloud account."
