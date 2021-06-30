@@ -14,7 +14,7 @@ func TestAccIBMSatelliteIBM(t *testing.T) {
 	t.Parallel()
 
 	// Unique name for an isnatnce so we can distinguish it from any other cos instances provisioned in your IBM account
-	expectedLocationName := fmt.Sprintf("terratest-%s", strings.ToLower(random.UniqueId()))
+	expectedLocationName := fmt.Sprintf("terratest-loc-%s", strings.ToLower(random.UniqueId()))
 
 	// resource group
 	expectedResourceGroup := "default"
