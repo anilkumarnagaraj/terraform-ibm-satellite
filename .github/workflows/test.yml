@@ -43,6 +43,6 @@ jobs:
 
       - name: Run Test
         working-directory: test
-        run: go test -v ./...
+        run: go test -v -timeout 90m ./...
         env:
           IC_API_KEY: ${{ secrets.ACCESS_KEY }}
